@@ -1,11 +1,9 @@
+import { Request, Response } from "express";
 import { PrismaClient } from ".prisma/client";
 
-interface Context {
+export interface Context {
+  req: Request;
+  res: Response;
   prisma: PrismaClient;
+  payload?: { userId: string };
 }
-
-const prisma = new PrismaClient();
-
-export const context: Context = {
-  prisma: prisma,
-};
