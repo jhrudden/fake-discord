@@ -14,6 +14,7 @@ import { LoginResponse } from "./types";
 import { createAccessToken, createRefreshToken } from "./Auth";
 import { isAuth } from "./middlewares/isAuth";
 import { sendRefreshToken } from "./sendRefreshToken";
+import { verify } from "jsonwebtoken";
 
 @Resolver()
 export class UserResolver {
@@ -32,6 +33,30 @@ export class UserResolver {
   @Query(() => [User])
   async users(@Ctx() { prisma }: Context) {
     return prisma.user.findMany();
+  }
+
+  @Query(() => User, { nullable: true })
+  async currentUser(@Ctx() context: Context) {
+    const { req, prisma } = context;
+    const authorization = req.headers["authorization"];
+
+    if (!authorization) {
+      return null;
+    }
+
+    try {
+      const token = authorization.split(" ")[1];
+      const payload: any = verify(token, process.env.ACCESS_TOKEN_SECRET!);
+      context.payload = payload as any;
+      return prisma.user.findUnique({
+        where: {
+          id: payload.userId,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
   }
 
   @Mutation(() => LoginResponse)
@@ -61,6 +86,7 @@ export class UserResolver {
 
     return {
       accessToken: createAccessToken(user),
+      user,
     };
   }
 
@@ -83,6 +109,12 @@ export class UserResolver {
       console.log(err);
       return false;
     }
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  async logout(@Ctx() { res }: Context) {
+    sendRefreshToken(res, "");
     return true;
   }
 }

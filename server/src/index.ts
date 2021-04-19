@@ -9,12 +9,20 @@ import cookieParser from "cookie-parser";
 import { verify } from "jsonwebtoken";
 import { createAccessToken } from "./Auth";
 import { sendRefreshToken } from "./sendRefreshToken";
+import cors from "cors";
 
 (async () => {
   const prisma = new PrismaClient();
   const app = express();
 
   app.use(cookieParser());
+
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    })
+  );
 
   app.get("/", (_, res) => res.send("hello"));
 
@@ -64,7 +72,7 @@ import { sendRefreshToken } from "./sendRefreshToken";
     }),
   });
 
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({ app, cors: false });
 
   app.listen(4000, () => {
     console.log("express server started");
