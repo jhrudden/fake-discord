@@ -1,12 +1,12 @@
 import { Form, Formik } from "formik";
 import React from "react";
 import { useRegisterMutation } from "../../hooks/graphql/graphql";
+import { FormHeader } from "../shared/Form/FormHeader";
+import { TextField } from "../shared/Form/TextField";
 import {
   ButtonContainer,
   Container,
-  FormError,
   FormField,
-  FormHeader,
   Header,
   LoginLink,
   SubmitButton,
@@ -50,30 +50,26 @@ const SignUpForm: React.FC<Props> = ({ history }) => {
       >
         {({ errors }) => (
           <Form>
-            <FormHeader error={errors.email}>
-              EMAIL
-              <FormError error={errors.email}>{errors.email}</FormError>
-            </FormHeader>
-            <FormField name="email" error={errors.email} />
-            <FormHeader error={errors.password}>
-              PASSWORD
-              <FormError error={errors.password}>{errors.password}</FormError>
-            </FormHeader>
-            <FormField
+            <FormHeader error={errors.email} text="EMAIL" />
+            <TextField
+              name="email"
+              type="email"
+              placeholder="email@email.com"
+            />
+            <FormHeader error={errors.password} text="PASSWORD" />
+            <TextField
               name="password"
               type="password"
-              error={errors.password}
+              placeholder="bad password"
             />
-            <FormHeader error={errors.confirmPassword}>
-              CONFIRM PASSWORD
-              <FormError error={errors.confirmPassword}>
-                {errors.confirmPassword}
-              </FormError>
-            </FormHeader>
-            <FormField
+            <FormHeader
+              error={errors.confirmPassword}
+              text="CONFIRM PASSWORD"
+            />
+            <TextField
               name="confirmPassword"
-              type="password"
-              error={errors.password}
+              type="confirmPassword"
+              placeholder=""
             />
             <ButtonContainer>
               <SubmitButton type="submit">Submit</SubmitButton>

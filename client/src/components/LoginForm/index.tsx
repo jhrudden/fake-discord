@@ -7,19 +7,15 @@ import {
   CurrentUserQuery,
   useLoginMutation,
 } from "../../hooks/graphql/graphql";
+import { FormHeader } from "../shared/Form/FormHeader";
+import { TextField } from "../shared/Form/TextField";
 import {
   ButtonContainer,
-  Container,
-  Description,
-  FormError,
   FormField,
-  FormHeader,
-  Header,
   Register,
   RegisterContainer,
   RegisterSubText,
   SubmitButton,
-  Title,
 } from "./LoginForm.style";
 import SignInSchema from "./SignInSchema";
 
@@ -48,18 +44,19 @@ const LoginForm: React.FC<Props> = ({ history }) => {
         });
       },
     });
-    console.log(res);
     if (res && res.data) {
       accessTokenVar(res.data.login.accessToken);
     }
     history.push("/");
   };
   return (
-    <Container>
-      <Header>
-        <Title>Welcome Home</Title>
-        <Description>Excited to see you back!</Description>
-      </Header>
+    <div className="bg-gray-darker flex flex-col justify-center px-16 py-10 rounded-lg w-400-px shadow-lg border-2 border-gray-dark border-opacity-25">
+      <div className="text-center text-white mb-2">
+        <div className="text-2xl font-bold">Welcome Home</div>
+        <div className="text-base text-gray-light">
+          Excited to see you back!
+        </div>
+      </div>
       <Formik
         initialValues={{ email: "", password: "" }}
         validationSchema={SignInSchema}
@@ -69,19 +66,13 @@ const LoginForm: React.FC<Props> = ({ history }) => {
       >
         {({ errors }) => (
           <Form>
-            <FormHeader error={errors.email}>
-              EMAIL
-              <FormError error={errors.email}>{errors.email}</FormError>
-            </FormHeader>
-            <FormField name="email" error={errors.email} />
-            <FormHeader error={errors.password}>
-              PASSWORD
-              <FormError error={errors.password}>{errors.password}</FormError>
-            </FormHeader>
-            <FormField
+            <FormHeader error={errors.email} text="EMAIL" />
+            <TextField name="email" type="email" placeholder="" />
+            <FormHeader error={errors.password} text="PASSWORD" />
+            <TextField
               name="password"
               type="password"
-              error={errors.password}
+              placeholder="bad password"
             />
             <ButtonContainer>
               <SubmitButton type="submit">Submit</SubmitButton>
@@ -95,7 +86,7 @@ const LoginForm: React.FC<Props> = ({ history }) => {
           </Form>
         )}
       </Formik>
-    </Container>
+    </div>
   );
 };
 

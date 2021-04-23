@@ -10,7 +10,6 @@ import Bye from "./containers/bye";
 import Home from "./containers/Home";
 import Login from "./containers/Login";
 import Register from "./containers/Register";
-import Header from "./header";
 import { useCurrentUserQuery } from "./hooks/graphql/graphql";
 import { User } from "./types/user";
 
@@ -35,9 +34,8 @@ const Routes: React.FC = () => {
     user = data.currentUser;
   }
   return (
-    <div>
+    <div className="">
       <BrowserRouter>
-        <Header />
         <Switch>
           <Route path="/login" exact component={Login} />
           <ProtectedRoute user={user} exact path="/" component={Home} />
