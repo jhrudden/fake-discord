@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: (theme) => ({
-        "background-pattern": "url('images/johnyhnery2.png')",
+        "background-pattern": "url('assets/images/johnyhnery2.png')",
       }),
       fontSize: {
         xxs: "0.6rem",
@@ -12,12 +12,16 @@ module.exports = {
       colors: {
         gray: {
           light: "#A3ABB8",
+          base: "#808b9d",
           dark: "#505768",
-          darker: "#3D434F",
+          darkest: "#353B46",
+          deepestDark: "#2C313A",
         },
         blue: {
-          bright: "#738CBF",
+          bright: "#7F9EDC",
+          base: "#6B8ED6",
         },
+        backgroundColor: "#3D434F",
       },
     },
   },

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { accessTokenVar } from "./accessToken";
 import Routes from "./routes";
+import { accessTokenVar } from "./util/accessToken";
 
 type Props = {};
 

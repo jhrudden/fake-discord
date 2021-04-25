@@ -1,12 +1,12 @@
 import { Form, Formik } from "formik";
 import React from "react";
-import { useRegisterMutation } from "../../hooks/graphql/graphql";
+import { useRegisterMutation } from "../../services/graphql/graphql";
+import Button from "../shared/Button";
 import { FormHeader } from "../shared/Form/FormHeader";
 import { TextField } from "../shared/Form/TextField";
 import {
   ButtonContainer,
   Container,
-  FormField,
   Header,
   LoginLink,
   SubmitButton,
@@ -37,10 +37,10 @@ const SignUpForm: React.FC<Props> = ({ history }) => {
   };
 
   return (
-    <Container>
-      <Header>
-        <Title>Create an account</Title>
-      </Header>
+    <div className="bg-backgroundColor flex flex-col justify-center px-16 py-10 rounded-lg w-400-px shadow-lg border-2 border-gray-dark border-opacity-25">
+      <div className="text-center text-white mb-1">
+        <div className="text-2xl font-bold">Create an account</div>
+      </div>
       <Formik
         initialValues={{ email: "", password: "", confirmPassword: "" }}
         validationSchema={SignUpSchema}
@@ -51,36 +51,25 @@ const SignUpForm: React.FC<Props> = ({ history }) => {
         {({ errors }) => (
           <Form>
             <FormHeader error={errors.email} text="EMAIL" />
-            <TextField
-              name="email"
-              type="email"
-              placeholder="email@email.com"
-            />
+            <TextField name="email" type="email" />
             <FormHeader error={errors.password} text="PASSWORD" />
-            <TextField
-              name="password"
-              type="password"
-              placeholder="bad password"
-            />
+            <TextField name="password" type="password" />
             <FormHeader
               error={errors.confirmPassword}
               text="CONFIRM PASSWORD"
             />
-            <TextField
-              name="confirmPassword"
-              type="confirmPassword"
-              placeholder=""
-            />
-            <ButtonContainer>
-              <SubmitButton type="submit">Submit</SubmitButton>
-            </ButtonContainer>
-            <LoginLink onClick={() => history.push("/login")}>
+            <TextField name="confirmPassword" type="confirmPassword" />
+            <Button type="submit">Create Account</Button>
+            <div
+              className="pl-1 pt-2.5 text-blue-base text-xs cursor-pointer hover:text-blue-bright"
+              onClick={() => history.push("/login")}
+            >
               Already have an account?
-            </LoginLink>
+            </div>
           </Form>
         )}
       </Formik>
-    </Container>
+    </div>
   );
 };
 

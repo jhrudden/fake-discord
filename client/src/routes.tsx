@@ -1,30 +1,11 @@
 import React from "react";
-import {
-  BrowserRouter,
-  Redirect,
-  Route,
-  RouteProps,
-  Switch,
-} from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { ProtectedRoute } from "./components/router";
 import Bye from "./containers/bye";
-import Home from "./containers/Home";
-import Login from "./containers/Login";
-import Register from "./containers/Register";
-import { useCurrentUserQuery } from "./hooks/graphql/graphql";
-import { User } from "./types/user";
-
-type ProtectedRouteProps = {
-  user: User | null;
-} & RouteProps;
-
-// TODO: add some sort of check that user is authoricated
-const ProtectedRoute = ({ user, ...routeProps }: ProtectedRouteProps) => {
-  if (user) {
-    return <Route {...routeProps} />;
-  } else {
-    return <Redirect to={"/login"} />;
-  }
-};
+import Home from "./containers/home";
+import Login from "./containers/login";
+import Register from "./containers/register";
+import { useCurrentUserQuery } from "./services/graphql/graphql";
 
 const Routes: React.FC = () => {
   const { data, loading } = useCurrentUserQuery();

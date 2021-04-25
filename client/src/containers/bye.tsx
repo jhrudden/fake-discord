@@ -1,5 +1,5 @@
 import React from "react";
-import { useByeQuery } from "../hooks/graphql/graphql";
+import { useByeQuery } from "../services/graphql/graphql";
 
 type Props = {};
 

@@ -1,22 +1,15 @@
 import { Form, Formik } from "formik";
 import React from "react";
 import { RouteComponentProps } from "react-router";
-import { accessTokenVar } from "../../accessToken";
 import {
   CurrentUserDocument,
   CurrentUserQuery,
   useLoginMutation,
-} from "../../hooks/graphql/graphql";
+} from "../../services/graphql/graphql";
+import { accessTokenVar } from "../../util/accessToken";
+import Button from "../shared/Button";
 import { FormHeader } from "../shared/Form/FormHeader";
 import { TextField } from "../shared/Form/TextField";
-import {
-  ButtonContainer,
-  FormField,
-  Register,
-  RegisterContainer,
-  RegisterSubText,
-  SubmitButton,
-} from "./LoginForm.style";
 import SignInSchema from "./SignInSchema";
 
 interface Props extends RouteComponentProps {}
@@ -26,7 +19,7 @@ export interface LoginParams {
   password: string;
 }
 
-// TODO: fix login form not redirecting to home
+// TODO: Make typing input adds to query params, which get passed to register
 const LoginForm: React.FC<Props> = ({ history }) => {
   const [login] = useLoginMutation();
   const handleSubmit = async (values: LoginParams) => {
@@ -50,7 +43,7 @@ const LoginForm: React.FC<Props> = ({ history }) => {
     history.push("/");
   };
   return (
-    <div className="bg-gray-darker flex flex-col justify-center px-16 py-10 rounded-lg w-400-px shadow-lg border-2 border-gray-dark border-opacity-25">
+    <div className="bg-backgroundColor flex flex-col justify-center px-16 py-10 rounded-lg w-400-px shadow-lg border-2 border-gray-dark border-opacity-25">
       <div className="text-center text-white mb-2">
         <div className="text-2xl font-bold">Welcome Home</div>
         <div className="text-base text-gray-light">
@@ -67,22 +60,23 @@ const LoginForm: React.FC<Props> = ({ history }) => {
         {({ errors }) => (
           <Form>
             <FormHeader error={errors.email} text="EMAIL" />
-            <TextField name="email" type="email" placeholder="" />
+            <TextField name="email" type="email" />
             <FormHeader error={errors.password} text="PASSWORD" />
-            <TextField
-              name="password"
-              type="password"
-              placeholder="bad password"
-            />
-            <ButtonContainer>
-              <SubmitButton type="submit">Submit</SubmitButton>
-            </ButtonContainer>
-            <RegisterContainer>
-              <RegisterSubText>Don't have an account? </RegisterSubText>
-              <Register onClick={() => history.push("/register")}>
+            <TextField name="password" type="password" />
+            <div className="flex justify-center">
+              <Button type="submit">Login</Button>
+            </div>
+            <div className="flex pt-1.5">
+              <div className="text-xs text-gray-base">
+                Don't have an account?{" "}
+              </div>
+              <span
+                className="pl-1 text-blue-base text-xs cursor-pointer hover:text-blue-bright"
+                onClick={() => history.push("/register")}
+              >
                 Register
-              </Register>
-            </RegisterContainer>
+              </span>
+            </div>
           </Form>
         )}
       </Formik>

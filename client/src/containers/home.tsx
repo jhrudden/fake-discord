@@ -1,5 +1,5 @@
 import React from "react";
-import { useUsersQuery } from "../../hooks/graphql/graphql";
+import { useUsersQuery } from "../services/graphql/graphql";
 
 type Props = {};
 

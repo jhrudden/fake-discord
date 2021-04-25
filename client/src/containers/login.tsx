@@ -1,7 +1,6 @@
 import React from "react";
 import { RouteComponentProps } from "react-router-dom";
-import LoginForm from "../../components/LoginForm";
-import { Container } from "./Login.style";
+import LoginForm from "../components/LoginForm";
 
 interface Props extends RouteComponentProps {}
 

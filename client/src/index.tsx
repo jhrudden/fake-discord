@@ -9,9 +9,9 @@ import { onError } from "@apollo/client/link/error";
 import { fromPromise } from "@apollo/client/link/utils";
 import React from "react";
 import ReactDOM from "react-dom";
-import { accessTokenVar } from "./accessToken";
 import App from "./app";
 import "./index.css";
+import { accessTokenVar } from "./util/accessToken";
 
 const cache = new InMemoryCache({});
 

@@ -1,6 +1,6 @@
 import React from "react";
-import { accessTokenVar } from "../../accessToken";
-import { useLogoutMutation } from "../../hooks/graphql/graphql";
+import { useLogoutMutation } from "../../services/graphql/graphql";
+import { accessTokenVar } from "../../util/accessToken";
 
 type Props = {};
 
