@@ -4,14 +4,6 @@ import { useRegisterMutation } from "../../services/graphql/graphql";
 import Button from "../shared/Button";
 import { FormHeader } from "../shared/Form/FormHeader";
 import { TextField } from "../shared/Form/TextField";
-import {
-  ButtonContainer,
-  Container,
-  Header,
-  LoginLink,
-  SubmitButton,
-  Title,
-} from "./Register.style";
 import SignUpSchema from "./SignUpSchema";
 
 interface Props {
