@@ -1,8 +1,7 @@
 import React from "react";
-import { RouteComponentProps } from "react-router-dom";
-import LoginForm from "../components/LoginForm";
+import LoginForm from "../components/AuthenticationFlow/LoginForm";
 
-interface Props extends RouteComponentProps {}
+interface Props {}
 
 const Login: React.FC<Props> = (props: Props) => {
   return (

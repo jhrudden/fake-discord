@@ -1,24 +1,17 @@
 import React from "react";
-import { useUsersQuery } from "../services/graphql/graphql";
+import ServerSidebar from "../components/ServerSidebar";
+import { useCurrentUserQuery } from "../services/graphql/graphql";
 
 type Props = {};
 
 const Home: React.FC<Props> = () => {
-  const { data } = useUsersQuery();
-  if (!data) {
-    return <div>Loading...</div>;
-  }
+  const { data, loading } = useCurrentUserQuery();
   return (
-    <div>
-      <h2>Users:</h2>
-      {data.users.map((user) => {
-        const { id, email } = user;
-        return (
-          <div key={user.id}>
-            <strong>id:</strong> ${id}, <strong>email:</strong> ${email}
-          </div>
-        );
-      })}
+    <div className="flex">
+      <ServerSidebar />
+      {!loading && data && (
+        <div className="">{JSON.stringify(data.currentUser)}</div>
+      )}
     </div>
   );
 };

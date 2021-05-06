@@ -1,8 +1,8 @@
-import { verify } from "jsonwebtoken";
 import "dotenv/config";
 import { Context } from "src/context";
 import { MiddlewareFn } from "type-graphql";
 import { AuthenticationError } from "apollo-server-errors";
+import { verify } from "jsonwebtoken";
 
 export const isAuth: MiddlewareFn<Context> = ({ context }, next) => {
   // follows form: bearer {authToken}

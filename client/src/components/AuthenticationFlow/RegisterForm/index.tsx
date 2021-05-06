@@ -1,16 +1,13 @@
 import { Form, Formik } from "formik";
 import React from "react";
-import { useRegisterMutation } from "../../services/graphql/graphql";
-import Button from "../shared/Button";
-import { FormHeader } from "../shared/Form/FormHeader";
-import { TextField } from "../shared/Form/TextField";
+import { useHistory } from "react-router";
+import { useRegisterMutation } from "../../../services/graphql/graphql";
+import Button from "../../shared/Button";
+import { FormHeader } from "../../shared/Form/FormHeader";
+import { TextField } from "../../shared/Form/TextField";
 import SignUpSchema from "./SignUpSchema";
 
-interface Props {
-  history: {
-    push: (path: string) => void;
-  };
-}
+interface Props {}
 
 export interface SignUpParams {
   email: string;
@@ -18,7 +15,9 @@ export interface SignUpParams {
   confirmPassword: string;
 }
 
-const SignUpForm: React.FC<Props> = ({ history }) => {
+// @todo: make signUp somehow add user to cache
+const SignUpForm: React.FC<Props> = () => {
+  const history = useHistory();
   const [register] = useRegisterMutation();
   const handleSubmit = async (values: SignUpParams) => {
     const res = await register({
@@ -41,7 +40,7 @@ const SignUpForm: React.FC<Props> = ({ history }) => {
         validateOnBlur={false}
       >
         {({ errors }) => (
-          <Form>
+          <Form className="w-80">
             <FormHeader error={errors.email} text="EMAIL" />
             <TextField name="email" type="email" />
             <FormHeader error={errors.password} text="PASSWORD" />

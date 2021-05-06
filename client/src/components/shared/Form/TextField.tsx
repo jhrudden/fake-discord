@@ -5,13 +5,24 @@ type Props = {
   type: string;
   name: string;
   placeholder?: string;
+  theme?: string;
 };
 
 export const TextField: React.FC<Props> = (props) => {
+  const theme = props.theme || "dark";
+  const themeFieldOptions: { [key: string]: string } = {
+    dark: " bg-gray-darkest ring-gray-deepestDark",
+    light: "bg-white ring-gray-dark",
+  };
+  const themeInputOptions: { [key: string]: string } = {
+    dark: "bg-gray-darkest text-white ",
+    light: "bg-white text-gray-darkest ",
+  };
   const fieldStyle =
-    "flex h-9 rounded-md bg-gray-darkest w-80 ring-1 ring-gray-deepestDark";
+    "flex h-9 rounded-md w-full ring-1 " + themeFieldOptions[theme];
   const inputStyle =
-    "outline-none bg-gray-darkest text-sm  px-2 w-full rounded-md text-white font-medium";
+    "outline-none text-sm px-2 w-full rounded-md font-medium " +
+    themeInputOptions[theme];
   const focusStyle = "focus:ring-blue-bright focus:ring-2";
   const [field, { error }] = useField({
     name: props.name,

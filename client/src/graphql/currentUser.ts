@@ -5,6 +5,13 @@ export const currentUserQuery = gql`
     currentUser {
       id
       email
+      name
+      servers {
+        server {
+          id
+          serverName
+        }
+      }
     }
   }
 `;

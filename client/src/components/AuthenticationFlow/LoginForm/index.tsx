@@ -1,18 +1,18 @@
 import { Form, Formik } from "formik";
 import React from "react";
-import { RouteComponentProps } from "react-router";
+import { useHistory } from "react-router";
 import {
   CurrentUserDocument,
   CurrentUserQuery,
   useLoginMutation,
-} from "../../services/graphql/graphql";
-import { accessTokenVar } from "../../util/accessToken";
-import Button from "../shared/Button";
-import { FormHeader } from "../shared/Form/FormHeader";
-import { TextField } from "../shared/Form/TextField";
+} from "../../../services/graphql/graphql";
+import { accessTokenVar } from "../../../util/accessToken";
+import Button from "../../shared/Button";
+import { FormHeader } from "../../shared/Form/FormHeader";
+import { TextField } from "../../shared/Form/TextField";
 import SignInSchema from "./SignInSchema";
 
-interface Props extends RouteComponentProps {}
+interface Props {}
 
 export interface LoginParams {
   email: string;
@@ -20,28 +20,34 @@ export interface LoginParams {
 }
 
 // TODO: Make typing input adds to query params, which get passed to register
-const LoginForm: React.FC<Props> = ({ history }) => {
+const LoginForm: React.FC<Props> = () => {
+  const history = useHistory();
   const [login] = useLoginMutation();
   const handleSubmit = async (values: LoginParams) => {
-    const res = await login({
-      variables: { email: values.email, password: values.password },
-      update: (cache, { data }) => {
-        if (!data) {
-          return null;
-        }
-        cache.writeQuery<CurrentUserQuery>({
-          query: CurrentUserDocument,
-          data: {
-            currentUser: data.login.user,
-          },
-        });
-      },
-    });
-    if (res && res.data) {
-      accessTokenVar(res.data.login.accessToken);
+    try {
+      const res = await login({
+        variables: { email: values.email, password: values.password },
+        update: (cache, { data }) => {
+          if (!data) {
+            return null;
+          }
+          cache.writeQuery<CurrentUserQuery>({
+            query: CurrentUserDocument,
+            data: {
+              currentUser: data.login.user,
+            },
+          });
+        },
+      });
+      if (res && res.data) {
+        accessTokenVar(res.data?.login.accessToken);
+      }
+      history.push("/@me");
+    } catch (e) {
+      console.log(e);
     }
-    history.push("/");
   };
+
   return (
     <div className="bg-backgroundColor flex flex-col justify-center px-16 py-10 rounded-lg w-400-px shadow-lg border-2 border-gray-dark border-opacity-25">
       <div className="text-center text-white mb-2">
@@ -58,7 +64,7 @@ const LoginForm: React.FC<Props> = ({ history }) => {
         validateOnBlur={false}
       >
         {({ errors }) => (
-          <Form>
+          <Form className="w-80">
             <FormHeader error={errors.email} text="EMAIL" />
             <TextField name="email" type="email" />
             <FormHeader error={errors.password} text="PASSWORD" />

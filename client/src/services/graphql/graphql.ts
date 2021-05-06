@@ -22,9 +22,15 @@ export type LoginResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createServer: Scalars['Boolean'];
   login: LoginResponse;
   register: Scalars['Boolean'];
   logout: Scalars['Boolean'];
+};
+
+
+export type MutationCreateServerArgs = {
+  serverName: Scalars['String'];
 };
 
 
@@ -41,37 +47,53 @@ export type MutationRegisterArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  hello: Scalars['String'];
-  bye: Scalars['String'];
+  servers: Array<Server>;
+  serversUsers?: Maybe<Array<User>>;
   users: Array<User>;
-  currentUser?: Maybe<User>;
+  currentUser: User;
+  usersServers: Array<Server>;
+};
+
+
+export type QueryServersUsersArgs = {
+  serverId: Scalars['String'];
+};
+
+export type Server = {
+  __typename?: 'Server';
+  id: Scalars['String'];
+  serverName: Scalars['String'];
+  users?: Maybe<Array<UserOnServer>>;
 };
 
 export type User = {
   __typename?: 'User';
   id: Scalars['String'];
   email: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
   tokenVersion: Scalars['Int'];
+  servers?: Maybe<Array<UserOnServer>>;
 };
 
-export type ByeQueryVariables = Exact<{ [key: string]: never; }>;
+export type UserOnServer = {
+  __typename?: 'UserOnServer';
+  userId: Scalars['String'];
+  serverId: Scalars['String'];
+  user: User;
+  server: Server;
+};
+
+export type CreateServerMutationVariables = Exact<{
+  serverName: Scalars['String'];
+}>;
 
 
-export type ByeQuery = (
-  { __typename?: 'Query' }
-  & Pick<Query, 'bye'>
-);
+export type CreateServerMutation = { __typename?: 'Mutation', createServer: boolean };
 
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentUserQuery = (
-  { __typename?: 'Query' }
-  & { currentUser?: Maybe<(
-    { __typename?: 'User' }
-    & Pick<User, 'id' | 'email'>
-  )> }
-);
+export type CurrentUserQuery = { __typename?: 'Query', currentUser: { __typename?: 'User', id: string, email: string, name?: Maybe<string>, servers?: Maybe<Array<{ __typename?: 'UserOnServer', server: { __typename?: 'Server', id: string, serverName: string } }>> } };
 
 export type LoginMutationVariables = Exact<{
   email: Scalars['String'];
@@ -79,25 +101,12 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = (
-  { __typename?: 'Mutation' }
-  & { login: (
-    { __typename?: 'LoginResponse' }
-    & Pick<LoginResponse, 'accessToken'>
-    & { user: (
-      { __typename?: 'User' }
-      & Pick<User, 'id' | 'email'>
-    ) }
-  ) }
-);
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', accessToken: string, user: { __typename?: 'User', id: string, email: string } } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LogoutMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'logout'>
-);
+export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
 
 export type RegisterMutationVariables = Exact<{
   email: Scalars['String'];
@@ -105,60 +114,62 @@ export type RegisterMutationVariables = Exact<{
 }>;
 
 
-export type RegisterMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'register'>
-);
+export type RegisterMutation = { __typename?: 'Mutation', register: boolean };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UsersQuery = (
-  { __typename?: 'Query' }
-  & { users: Array<(
-    { __typename?: 'User' }
-    & Pick<User, 'email' | 'id'>
-  )> }
-);
+export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', email: string, id: string }> };
+
+export type UsersServersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export const ByeDocument = gql`
-    query Bye {
-  bye
+export type UsersServersQuery = { __typename?: 'Query', usersServers: Array<{ __typename?: 'Server', id: string, serverName: string }> };
+
+
+export const CreateServerDocument = gql`
+    mutation CreateServer($serverName: String!) {
+  createServer(serverName: $serverName)
 }
     `;
+export type CreateServerMutationFn = Apollo.MutationFunction<CreateServerMutation, CreateServerMutationVariables>;
 
 /**
- * __useByeQuery__
+ * __useCreateServerMutation__
  *
- * To run a query within a React component, call `useByeQuery` and pass it any options that fit your needs.
- * When your component renders, `useByeQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
+ * To run a mutation, you first call `useCreateServerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateServerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
  *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const { data, loading, error } = useByeQuery({
+ * const [createServerMutation, { data, loading, error }] = useCreateServerMutation({
  *   variables: {
+ *      serverName: // value for 'serverName'
  *   },
  * });
  */
-export function useByeQuery(baseOptions?: Apollo.QueryHookOptions<ByeQuery, ByeQueryVariables>) {
+export function useCreateServerMutation(baseOptions?: Apollo.MutationHookOptions<CreateServerMutation, CreateServerMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ByeQuery, ByeQueryVariables>(ByeDocument, options);
+        return Apollo.useMutation<CreateServerMutation, CreateServerMutationVariables>(CreateServerDocument, options);
       }
-export function useByeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ByeQuery, ByeQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ByeQuery, ByeQueryVariables>(ByeDocument, options);
-        }
-export type ByeQueryHookResult = ReturnType<typeof useByeQuery>;
-export type ByeLazyQueryHookResult = ReturnType<typeof useByeLazyQuery>;
-export type ByeQueryResult = Apollo.QueryResult<ByeQuery, ByeQueryVariables>;
+export type CreateServerMutationHookResult = ReturnType<typeof useCreateServerMutation>;
+export type CreateServerMutationResult = Apollo.MutationResult<CreateServerMutation>;
+export type CreateServerMutationOptions = Apollo.BaseMutationOptions<CreateServerMutation, CreateServerMutationVariables>;
 export const CurrentUserDocument = gql`
     query CurrentUser {
   currentUser {
     id
     email
+    name
+    servers {
+      server {
+        id
+        serverName
+      }
+    }
   }
 }
     `;
@@ -324,3 +335,38 @@ export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<User
 export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
 export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
 export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
+export const UsersServersDocument = gql`
+    query UsersServers {
+  usersServers {
+    id
+    serverName
+  }
+}
+    `;
+
+/**
+ * __useUsersServersQuery__
+ *
+ * To run a query within a React component, call `useUsersServersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersServersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersServersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUsersServersQuery(baseOptions?: Apollo.QueryHookOptions<UsersServersQuery, UsersServersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UsersServersQuery, UsersServersQueryVariables>(UsersServersDocument, options);
+      }
+export function useUsersServersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersServersQuery, UsersServersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UsersServersQuery, UsersServersQueryVariables>(UsersServersDocument, options);
+        }
+export type UsersServersQueryHookResult = ReturnType<typeof useUsersServersQuery>;
+export type UsersServersLazyQueryHookResult = ReturnType<typeof useUsersServersLazyQuery>;
+export type UsersServersQueryResult = Apollo.QueryResult<UsersServersQuery, UsersServersQueryVariables>;

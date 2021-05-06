@@ -1,6 +1,6 @@
-import "reflect-metadata";
 import { compare, hash } from "bcryptjs";
-import { Context } from "./context";
+import "reflect-metadata";
+import Server from "../entity/server";
 import {
   Arg,
   Ctx,
@@ -9,54 +9,68 @@ import {
   Resolver,
   UseMiddleware,
 } from "type-graphql";
-import User from "./entity/User";
-import { LoginResponse } from "./types";
-import { createAccessToken, createRefreshToken } from "./Auth";
-import { isAuth } from "./middlewares/isAuth";
-import { sendRefreshToken } from "./sendRefreshToken";
-import { verify } from "jsonwebtoken";
+import {
+  createAccessToken,
+  createRefreshToken,
+  sendRefreshToken,
+} from "../Auth";
+import { Context } from "../context";
+import User from "../entity/user";
+import { isAuth } from "../middlewares/isAuth";
+import { LoginResponse } from "../types/loginResponse";
 
 @Resolver()
 export class UserResolver {
-  @Query(() => String)
-  hello() {
-    return "hi!";
-  }
-
-  @Query(() => String)
-  @UseMiddleware(isAuth)
-  bye(@Ctx() { payload }: Context) {
-    console.log(payload);
-    return `your user id is: ${payload!.userId}`;
-  }
-
   @Query(() => [User])
   async users(@Ctx() { prisma }: Context) {
     return prisma.user.findMany();
   }
 
-  @Query(() => User, { nullable: true })
+  @Query(() => User)
+  @UseMiddleware(isAuth)
   async currentUser(@Ctx() context: Context) {
-    const { req, prisma } = context;
-    const authorization = req.headers["authorization"];
-
-    if (!authorization) {
-      return null;
-    }
-
-    try {
-      const token = authorization.split(" ")[1];
-      const payload: any = verify(token, process.env.ACCESS_TOKEN_SECRET!);
-      context.payload = payload as any;
-      return prisma.user.findUnique({
-        where: {
-          id: payload.userId,
+    const { prisma, payload } = context;
+    const res = prisma.user.findUnique({
+      where: {
+        id: payload!.userId,
+      },
+      include: {
+        servers: {
+          include: {
+            server: true,
+          },
         },
-      });
-    } catch (err) {
-      console.log(err);
-      return null;
+      },
+    });
+
+    return res;
+  }
+
+  @Query(() => [Server])
+  @UseMiddleware(isAuth)
+  async usersServers(@Ctx() context: Context) {
+    const { prisma, payload } = context;
+    const res = await prisma.user.findUnique({
+      where: { id: payload?.userId },
+      select: {
+        servers: {
+          select: {
+            server: true,
+          },
+        },
+      },
+    });
+    if (!res || !res.servers) {
+      return [] as Server[];
     }
+
+    const result: Server[] = [];
+    //const result = res.servers.reduce(
+    //(accum, curr) => [...accum, curr.server],
+    //[] as Server[]
+    //);
+
+    return result;
   }
 
   @Mutation(() => LoginResponse)
@@ -82,10 +96,10 @@ export class UserResolver {
     }
 
     // login success
-    sendRefreshToken(res, createRefreshToken(user));
+    sendRefreshToken(res, createRefreshToken(user.id, user.tokenVersion));
 
     return {
-      accessToken: createAccessToken(user),
+      accessToken: createAccessToken(user.id),
       user,
     };
   }
@@ -103,6 +117,7 @@ export class UserResolver {
         data: {
           email,
           password: hashedPassword,
+          servers: {},
         },
       });
     } catch (err) {

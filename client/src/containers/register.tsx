@@ -1,13 +1,12 @@
 import React from "react";
-import { RouteComponentProps } from "react-router-dom";
-import SignUpForm from "../components/SignUpForm";
+import SignUpForm from "../components/AuthenticationFlow/RegisterForm";
 
-interface Props extends RouteComponentProps {}
+interface Props {}
 
-const Register: React.FC<Props> = ({ history }) => {
+const Register: React.FC<Props> = (props) => {
   return (
     <div className="flex h-screen w-full items-center justify-center bg-background-pattern ">
-      <SignUpForm history={history} />
+      <SignUpForm {...props} />
     </div>
   );
 };

@@ -1,16 +1,12 @@
 import { Redirect, Route, RouteProps } from "react-router";
-import { User } from "../../types/user";
+import { accessTokenVar } from "../../util/accessToken";
 
-type ProtectedRouteProps = {
-  user: User | null;
-} & RouteProps;
+type ProtectedRouteProps = {} & RouteProps;
 
 // TODO: add some sort of check that user is authoricated
-export const ProtectedRoute = ({
-  user,
-  ...routeProps
-}: ProtectedRouteProps) => {
-  if (user) {
+export const ProtectedRoute = ({ ...routeProps }: ProtectedRouteProps) => {
+  const authToken = accessTokenVar();
+  if (authToken) {
     return <Route {...routeProps} />;
   } else {
     return <Redirect to={"/login"} />;
