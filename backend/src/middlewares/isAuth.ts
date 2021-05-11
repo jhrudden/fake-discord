@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { Context } from "src/context";
+import { Context } from "../types/context";
 import { MiddlewareFn } from "type-graphql";
 import { AuthenticationError } from "apollo-server-errors";
 import { verify } from "jsonwebtoken";

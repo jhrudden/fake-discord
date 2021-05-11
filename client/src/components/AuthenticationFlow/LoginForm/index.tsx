@@ -2,8 +2,8 @@ import { Form, Formik } from "formik";
 import React from "react";
 import { useHistory } from "react-router";
 import {
-  CurrentUserDocument,
-  CurrentUserQuery,
+  MeDocument,
+  MeQuery,
   useLoginMutation,
 } from "../../../services/graphql/graphql";
 import { accessTokenVar } from "../../../util/accessToken";
@@ -31,10 +31,10 @@ const LoginForm: React.FC<Props> = () => {
           if (!data) {
             return null;
           }
-          cache.writeQuery<CurrentUserQuery>({
-            query: CurrentUserDocument,
+          cache.writeQuery<MeQuery>({
+            query: MeDocument,
             data: {
-              currentUser: data.login.user,
+              me: data.login.user,
             },
           });
         },

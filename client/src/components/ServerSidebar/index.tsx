@@ -1,15 +1,20 @@
 import React from "react";
-import { useUsersServersQuery } from "../../services/graphql/graphql";
+import { useServersQuery } from "../../services/graphql/graphql";
+import { User } from "../../types/user";
 import {
   AddServerItem,
   HomeServerItem,
   ServerItem,
 } from "./serverUtilityItems";
 
-type Props = {};
+type Props = {
+  user: User;
+};
 
-const ServerSidebar: React.FC<Props> = () => {
-  const { data, loading, refetch } = useUsersServersQuery();
+const ServerSidebar: React.FC<Props> = ({ user }) => {
+  const { data, loading, refetch } = useServersQuery({
+    variables: { userId: user.id },
+  });
   return (
     <div className="hidden sm:flex sticky">
       <div className="w-20 flex flex-col h-screen bg-gray-deepestDark">
@@ -19,7 +24,7 @@ const ServerSidebar: React.FC<Props> = () => {
         {/* Server Items*/}
         {!loading &&
           data &&
-          data.usersServers!.map((server) => (
+          data.servers!.map((server) => (
             <ServerItem server={server} key={server.id} />
           ))}
         {/* Add button  */}

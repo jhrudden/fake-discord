@@ -1,17 +1,17 @@
-import { PrismaClient } from "@prisma/client";
 import { ApolloServer } from "apollo-server-express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import "dotenv/config";
 import express from "express";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
+import { createConnection } from "typeorm";
 import { resolvers } from "./resolvers";
-import { refreshToken } from "./services/refreshToken";
+import { refreshToken } from "./services/token";
 
 (async () => {
-  const prisma = new PrismaClient();
   const app = express();
+
+  await createConnection();
 
   app.use(cookieParser());
 
@@ -23,23 +23,20 @@ import { refreshToken } from "./services/refreshToken";
   );
 
   app.post("/refresh_token", async (req, res) => {
-    return refreshToken(req, res, prisma);
+    return refreshToken(req, res);
   });
 
   const apolloServer = new ApolloServer({
-    schema: await buildSchema({
-      resolvers,
-    }),
+    schema: await buildSchema({ resolvers }),
     context: ({ req, res }) => ({
       req,
       res,
-      prisma,
     }),
   });
 
   apolloServer.applyMiddleware({ app, cors: false });
 
   app.listen(4000, () => {
-    console.log("express server started");
+    console.log("App has started");
   });
 })();

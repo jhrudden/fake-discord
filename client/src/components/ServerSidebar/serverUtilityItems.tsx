@@ -1,7 +1,7 @@
 import { ApolloQueryResult } from "@apollo/client";
 import React from "react";
 import { useHistory, useLocation } from "react-router";
-import { UsersServersQuery } from "../../services/graphql/graphql";
+import { ServersQuery } from "../../services/graphql/graphql";
 import { ServerIdentifier } from "../../types/server";
 import CreateServer from "../CreateServer";
 import { useModal } from "../hooks/useModal";
@@ -43,7 +43,7 @@ export const UtilityWrapper: React.FC<UtilityProps> = ({
 };
 
 type Props = {
-  refetch: () => Promise<ApolloQueryResult<UsersServersQuery>>;
+  refetch: () => Promise<ApolloQueryResult<ServersQuery>>;
 };
 
 export const AddServerItem: React.FC<Props> = ({ refetch }) => {

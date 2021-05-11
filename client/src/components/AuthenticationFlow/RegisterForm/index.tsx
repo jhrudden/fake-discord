@@ -11,6 +11,7 @@ interface Props {}
 
 export interface SignUpParams {
   email: string;
+  username: string;
   password: string;
   confirmPassword: string;
 }
@@ -21,7 +22,11 @@ const SignUpForm: React.FC<Props> = () => {
   const [register] = useRegisterMutation();
   const handleSubmit = async (values: SignUpParams) => {
     const res = await register({
-      variables: { email: values.email, password: values.password },
+      variables: {
+        email: values.email,
+        username: values.username,
+        password: values.password,
+      },
     });
     history.push("/");
     console.log(res);
@@ -33,7 +38,12 @@ const SignUpForm: React.FC<Props> = () => {
         <div className="text-2xl font-bold">Create an account</div>
       </div>
       <Formik
-        initialValues={{ email: "", password: "", confirmPassword: "" }}
+        initialValues={{
+          email: "",
+          username: "",
+          password: "",
+          confirmPassword: "",
+        }}
         validationSchema={SignUpSchema}
         onSubmit={handleSubmit}
         validateOnChange={false}
@@ -43,6 +53,8 @@ const SignUpForm: React.FC<Props> = () => {
           <Form className="w-80">
             <FormHeader error={errors.email} text="EMAIL" />
             <TextField name="email" type="email" />
+            <FormHeader error={errors.username} text="USERNAME" />
+            <TextField name="username" type="username" />
             <FormHeader error={errors.password} text="PASSWORD" />
             <TextField name="password" type="password" />
             <FormHeader
