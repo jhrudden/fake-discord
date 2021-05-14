@@ -20,11 +20,11 @@ export class ServerUser extends BaseEntity {
   @Field()
   serverId: string;
 
-  @ManyToOne(() => User, (user) => user.servers, { primary: true })
+  @ManyToOne(() => User, (user) => user.servers, { onDelete: "CASCADE" })
   @JoinColumn({ name: "userId" })
   user: Promise<User>;
 
-  @ManyToOne(() => Server, (server) => server.users, { primary: true })
+  @ManyToOne(() => Server, (server) => server.users, { onDelete: "CASCADE" })
   @JoinColumn({ name: "serverId" })
   server: Promise<Server>;
 }

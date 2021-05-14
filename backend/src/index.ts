@@ -2,6 +2,7 @@ import { ApolloServer } from "apollo-server-express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
+import { createServer } from "http";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
@@ -10,6 +11,7 @@ import { refreshToken } from "./services/token";
 
 (async () => {
   const app = express();
+  const ws = createServer(app);
 
   await createConnection();
 
@@ -35,8 +37,9 @@ import { refreshToken } from "./services/token";
   });
 
   apolloServer.applyMiddleware({ app, cors: false });
+  apolloServer.installSubscriptionHandlers(ws);
 
-  app.listen(4000, () => {
+  ws.listen(4000, () => {
     console.log("App has started");
   });
 })();
