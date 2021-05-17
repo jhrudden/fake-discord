@@ -1,10 +1,10 @@
 import { Form, Formik } from "formik";
 import React from "react";
-import { useCreateServerMutation } from "../../services/graphql/graphql";
-import Button from "../shared/Button";
-import { FormHeader } from "../shared/Form/FormHeader";
-import { TextField } from "../shared/Form/TextField";
-import CreateServerSchema from "./CreateServerSchema";
+import { useCreateServerMutation } from "../../../../services/graphql/graphql";
+import { FormHeader } from "../../form/formHeader";
+import Button from "../../button";
+import CreateServerSchema from "./createServerSchema";
+import { TextField } from "../../form/textField";
 
 type Props = {
   handleClose: () => Promise<void>;

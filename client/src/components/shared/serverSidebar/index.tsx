@@ -1,19 +1,18 @@
 import React from "react";
-import { useServersQuery } from "../../services/graphql/graphql";
-import { User } from "../../types/user";
+import { useServersQuery } from "../../../services/graphql/graphql";
+import { userIdVar } from "../../../util/userId";
 import {
   AddServerItem,
   HomeServerItem,
   ServerItem,
 } from "./serverUtilityItems";
 
-type Props = {
-  user: User;
-};
+type Props = {};
 
-const ServerSidebar: React.FC<Props> = ({ user }) => {
+const ServerSidebar: React.FC<Props> = () => {
+  const userId = userIdVar();
   const { data, loading, refetch } = useServersQuery({
-    variables: { userId: user.id },
+    variables: { userId },
   });
   return (
     <div className="hidden sm:flex sticky">

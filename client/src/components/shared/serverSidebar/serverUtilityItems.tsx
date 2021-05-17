@@ -1,11 +1,11 @@
 import { ApolloQueryResult } from "@apollo/client";
 import React from "react";
 import { useHistory, useLocation } from "react-router";
-import { ServersQuery } from "../../services/graphql/graphql";
-import { ServerIdentifier } from "../../types/server";
-import CreateServer from "../CreateServer";
-import { useModal } from "../hooks/useModal";
-import Modal from "../shared/Modal";
+import { ServersQuery } from "../../../services/graphql/graphql";
+import { ServerIdentifier } from "../../../types/server";
+import CreateServer from "./createServer";
+import { useModal } from "../../hooks/useModal";
+import Modal from "../modal";
 
 type UtilityProps = {
   children: React.ReactNode;
@@ -112,7 +112,7 @@ export const ServerItem: React.FC<ChannelProps> = ({ server }) => {
 
   const handleClick = () => {
     if (!selected) {
-      history.push(currentPath);
+      history.push({ pathname: currentPath, state: { serverId: id } });
     }
   };
   return (

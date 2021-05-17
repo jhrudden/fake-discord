@@ -1,5 +1,5 @@
 import React from "react";
-import LoginForm from "../components/AuthenticationFlow/LoginForm";
+import LoginForm from "../components/authenticationFlow/loginForm";
 
 interface Props {}
 

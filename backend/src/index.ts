@@ -4,10 +4,12 @@ import cors from "cors";
 import express from "express";
 import { createServer } from "http";
 import "reflect-metadata";
+import { SubscriptionServer } from "subscriptions-transport-ws";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { resolvers } from "./resolvers";
 import { refreshToken } from "./services/token";
+import { subscribe, execute } from "graphql";
 
 (async () => {
   const app = express();
@@ -28,8 +30,9 @@ import { refreshToken } from "./services/token";
     return refreshToken(req, res);
   });
 
+  const schema = await buildSchema({ resolvers });
   const apolloServer = new ApolloServer({
-    schema: await buildSchema({ resolvers }),
+    schema: schema,
     context: ({ req, res }) => ({
       req,
       res,
@@ -37,9 +40,18 @@ import { refreshToken } from "./services/token";
   });
 
   apolloServer.applyMiddleware({ app, cors: false });
-  apolloServer.installSubscriptionHandlers(ws);
 
   ws.listen(4000, () => {
     console.log("App has started");
+    new SubscriptionServer(
+      {
+        execute,
+        subscribe,
+        schema: schema,
+      },
+      {
+        server: ws,
+      }
+    );
   });
 })();

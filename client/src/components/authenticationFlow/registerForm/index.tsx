@@ -2,9 +2,9 @@ import { Form, Formik } from "formik";
 import React from "react";
 import { useHistory } from "react-router";
 import { useRegisterMutation } from "../../../services/graphql/graphql";
-import Button from "../../shared/Button";
-import { FormHeader } from "../../shared/Form/FormHeader";
-import { TextField } from "../../shared/Form/TextField";
+import Button from "../../shared/button";
+import { FormHeader } from "../../shared/form/formHeader";
+import { TextField } from "../../shared/form/textField";
 import SignUpSchema from "./SignUpSchema";
 
 interface Props {}

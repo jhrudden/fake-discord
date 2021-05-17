@@ -7,9 +7,9 @@ import {
   useLoginMutation,
 } from "../../../services/graphql/graphql";
 import { accessTokenVar } from "../../../util/accessToken";
-import Button from "../../shared/Button";
-import { FormHeader } from "../../shared/Form/FormHeader";
-import { TextField } from "../../shared/Form/TextField";
+import Button from "../../shared/button";
+import { FormHeader } from "../../shared/form/formHeader";
+import { TextField } from "../../shared/form/textField";
 import SignInSchema from "./SignInSchema";
 
 interface Props {}
