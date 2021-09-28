@@ -42,6 +42,7 @@ export class ServerUserResolver {
           serverId: serverId,
         },
       });
+      console.log("users", users);
       const usersOnServer = [] as User[];
       users.map((user) => usersOnServer.push((user as any).__user__));
 

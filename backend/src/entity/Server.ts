@@ -6,6 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { Message } from "./Message";
 import { ServerUser } from "./ServerUser";
 
 @Entity("servers")
@@ -21,4 +22,7 @@ export class Server extends BaseEntity {
 
   @OneToMany(() => ServerUser, (su) => su.user)
   users: Promise<ServerUser[]>;
+
+  @OneToMany(() => Message, (ms) => ms.server)
+  messages: Promise<Message[]>;
 }

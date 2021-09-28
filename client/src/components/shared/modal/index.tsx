@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { usePortal } from "../../hooks/usePortal";
+import { usePortal } from "../hooks/usePortal";
 import ModalContent from "./modalContent";
 
 export type ModalProps = {

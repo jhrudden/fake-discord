@@ -4,7 +4,7 @@ import { useHistory, useLocation } from "react-router";
 import { ServersQuery } from "../../../services/graphql/graphql";
 import { ServerIdentifier } from "../../../types/server";
 import CreateServer from "./createServer";
-import { useModal } from "../../hooks/useModal";
+import { useModal } from "../hooks/useModal";
 import Modal from "../modal";
 
 type UtilityProps = {

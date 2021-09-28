@@ -1,6 +1,6 @@
-import { ServerUser } from "../entity/ServerUser";
 import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from "type-graphql";
 import { Server } from "../entity/Server";
+import { ServerUser } from "../entity/ServerUser";
 import { isAuth } from "../middlewares/isAuth";
 import { Context } from "../types/context";
 
