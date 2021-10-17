@@ -12,7 +12,10 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
+  DateTime: any;
 };
+
 
 export type LoginResponse = {
   __typename?: 'LoginResponse';
@@ -20,8 +23,23 @@ export type LoginResponse = {
   user: User;
 };
 
+export type Message = {
+  __typename?: 'Message';
+  messageId: Scalars['String'];
+  datePosted: Scalars['DateTime'];
+  content: Scalars['String'];
+};
+
+export type MessageResponse = {
+  __typename?: 'MessageResponse';
+  message: Message;
+  author: User;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  postMessageToServer: Scalars['Boolean'];
+  deleteMessageFromServer: Scalars['Boolean'];
   createServer: Scalars['Boolean'];
   addUserToServer: Scalars['Boolean'];
   deleteUserFromServer: Scalars['Boolean'];
@@ -29,6 +47,18 @@ export type Mutation = {
   revokeRefreshToken: Scalars['Boolean'];
   login: LoginResponse;
   register: Scalars['Boolean'];
+};
+
+
+export type MutationPostMessageToServerArgs = {
+  content: Scalars['String'];
+  serverId: Scalars['String'];
+};
+
+
+export type MutationDeleteMessageFromServerArgs = {
+  messageId: Scalars['String'];
+  serverId: Scalars['String'];
 };
 
 
@@ -68,10 +98,23 @@ export type MutationRegisterArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  userMessages: Array<Message>;
+  serverMessages: Array<MessageResponse>;
   usersOnServer: Array<User>;
   servers: Array<Server>;
   users: Array<User>;
   me?: Maybe<User>;
+};
+
+
+export type QueryUserMessagesArgs = {
+  userId?: Maybe<Scalars['String']>;
+  serverId: Scalars['String'];
+};
+
+
+export type QueryServerMessagesArgs = {
+  serverId: Scalars['String'];
 };
 
 
@@ -92,8 +135,20 @@ export type Server = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  newServerMessage: MessageResponse;
+  deleteServerMessage: MessageResponse;
   newServerUser: User;
   deleteServerUser: User;
+};
+
+
+export type SubscriptionNewServerMessageArgs = {
+  serverId: Scalars['String'];
+};
+
+
+export type SubscriptionDeleteServerMessageArgs = {
+  serverId: Scalars['String'];
 };
 
 
@@ -114,6 +169,43 @@ export type User = {
   password: Scalars['String'];
   tokenVersion: Scalars['Int'];
 };
+
+export type ServerMessagesQueryVariables = Exact<{
+  serverId: Scalars['String'];
+}>;
+
+
+export type ServerMessagesQuery = { __typename?: 'Query', serverMessages: Array<{ __typename?: 'MessageResponse', message: { __typename?: 'Message', content: string, messageId: string, datePosted: any }, author: { __typename?: 'User', id: string, username: string } }> };
+
+export type PostMessageToServerMutationVariables = Exact<{
+  serverId: Scalars['String'];
+  content: Scalars['String'];
+}>;
+
+
+export type PostMessageToServerMutation = { __typename?: 'Mutation', postMessageToServer: boolean };
+
+export type DeleteMessageFromServerMutationVariables = Exact<{
+  messageId: Scalars['String'];
+  serverId: Scalars['String'];
+}>;
+
+
+export type DeleteMessageFromServerMutation = { __typename?: 'Mutation', deleteMessageFromServer: boolean };
+
+export type DeleteServerMessageSubscriptionVariables = Exact<{
+  serverId: Scalars['String'];
+}>;
+
+
+export type DeleteServerMessageSubscription = { __typename?: 'Subscription', deleteServerMessage: { __typename?: 'MessageResponse', message: { __typename?: 'Message', content: string, messageId: string, datePosted: any }, author: { __typename?: 'User', id: string, username: string } } };
+
+export type NewServerMessageSubscriptionVariables = Exact<{
+  serverId: Scalars['String'];
+}>;
+
+
+export type NewServerMessageSubscription = { __typename?: 'Subscription', newServerMessage: { __typename?: 'MessageResponse', message: { __typename?: 'Message', content: string, messageId: string, datePosted: any }, author: { __typename?: 'User', id: string, username: string } } };
 
 export type CreateServerMutationVariables = Exact<{
   serverName: Scalars['String'];
@@ -206,6 +298,189 @@ export type RegisterMutationVariables = Exact<{
 export type RegisterMutation = { __typename?: 'Mutation', register: boolean };
 
 
+export const ServerMessagesDocument = gql`
+    query ServerMessages($serverId: String!) {
+  serverMessages(serverId: $serverId) {
+    message {
+      content
+      messageId
+      datePosted
+    }
+    author {
+      id
+      username
+    }
+  }
+}
+    `;
+
+/**
+ * __useServerMessagesQuery__
+ *
+ * To run a query within a React component, call `useServerMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useServerMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useServerMessagesQuery({
+ *   variables: {
+ *      serverId: // value for 'serverId'
+ *   },
+ * });
+ */
+export function useServerMessagesQuery(baseOptions: Apollo.QueryHookOptions<ServerMessagesQuery, ServerMessagesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ServerMessagesQuery, ServerMessagesQueryVariables>(ServerMessagesDocument, options);
+      }
+export function useServerMessagesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ServerMessagesQuery, ServerMessagesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ServerMessagesQuery, ServerMessagesQueryVariables>(ServerMessagesDocument, options);
+        }
+export type ServerMessagesQueryHookResult = ReturnType<typeof useServerMessagesQuery>;
+export type ServerMessagesLazyQueryHookResult = ReturnType<typeof useServerMessagesLazyQuery>;
+export type ServerMessagesQueryResult = Apollo.QueryResult<ServerMessagesQuery, ServerMessagesQueryVariables>;
+export const PostMessageToServerDocument = gql`
+    mutation PostMessageToServer($serverId: String!, $content: String!) {
+  postMessageToServer(serverId: $serverId, content: $content)
+}
+    `;
+export type PostMessageToServerMutationFn = Apollo.MutationFunction<PostMessageToServerMutation, PostMessageToServerMutationVariables>;
+
+/**
+ * __usePostMessageToServerMutation__
+ *
+ * To run a mutation, you first call `usePostMessageToServerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePostMessageToServerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [postMessageToServerMutation, { data, loading, error }] = usePostMessageToServerMutation({
+ *   variables: {
+ *      serverId: // value for 'serverId'
+ *      content: // value for 'content'
+ *   },
+ * });
+ */
+export function usePostMessageToServerMutation(baseOptions?: Apollo.MutationHookOptions<PostMessageToServerMutation, PostMessageToServerMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PostMessageToServerMutation, PostMessageToServerMutationVariables>(PostMessageToServerDocument, options);
+      }
+export type PostMessageToServerMutationHookResult = ReturnType<typeof usePostMessageToServerMutation>;
+export type PostMessageToServerMutationResult = Apollo.MutationResult<PostMessageToServerMutation>;
+export type PostMessageToServerMutationOptions = Apollo.BaseMutationOptions<PostMessageToServerMutation, PostMessageToServerMutationVariables>;
+export const DeleteMessageFromServerDocument = gql`
+    mutation DeleteMessageFromServer($messageId: String!, $serverId: String!) {
+  deleteMessageFromServer(messageId: $messageId, serverId: $serverId)
+}
+    `;
+export type DeleteMessageFromServerMutationFn = Apollo.MutationFunction<DeleteMessageFromServerMutation, DeleteMessageFromServerMutationVariables>;
+
+/**
+ * __useDeleteMessageFromServerMutation__
+ *
+ * To run a mutation, you first call `useDeleteMessageFromServerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteMessageFromServerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteMessageFromServerMutation, { data, loading, error }] = useDeleteMessageFromServerMutation({
+ *   variables: {
+ *      messageId: // value for 'messageId'
+ *      serverId: // value for 'serverId'
+ *   },
+ * });
+ */
+export function useDeleteMessageFromServerMutation(baseOptions?: Apollo.MutationHookOptions<DeleteMessageFromServerMutation, DeleteMessageFromServerMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteMessageFromServerMutation, DeleteMessageFromServerMutationVariables>(DeleteMessageFromServerDocument, options);
+      }
+export type DeleteMessageFromServerMutationHookResult = ReturnType<typeof useDeleteMessageFromServerMutation>;
+export type DeleteMessageFromServerMutationResult = Apollo.MutationResult<DeleteMessageFromServerMutation>;
+export type DeleteMessageFromServerMutationOptions = Apollo.BaseMutationOptions<DeleteMessageFromServerMutation, DeleteMessageFromServerMutationVariables>;
+export const DeleteServerMessageDocument = gql`
+    subscription DeleteServerMessage($serverId: String!) {
+  deleteServerMessage(serverId: $serverId) {
+    message {
+      content
+      messageId
+      datePosted
+    }
+    author {
+      id
+      username
+    }
+  }
+}
+    `;
+
+/**
+ * __useDeleteServerMessageSubscription__
+ *
+ * To run a query within a React component, call `useDeleteServerMessageSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useDeleteServerMessageSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDeleteServerMessageSubscription({
+ *   variables: {
+ *      serverId: // value for 'serverId'
+ *   },
+ * });
+ */
+export function useDeleteServerMessageSubscription(baseOptions: Apollo.SubscriptionHookOptions<DeleteServerMessageSubscription, DeleteServerMessageSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<DeleteServerMessageSubscription, DeleteServerMessageSubscriptionVariables>(DeleteServerMessageDocument, options);
+      }
+export type DeleteServerMessageSubscriptionHookResult = ReturnType<typeof useDeleteServerMessageSubscription>;
+export type DeleteServerMessageSubscriptionResult = Apollo.SubscriptionResult<DeleteServerMessageSubscription>;
+export const NewServerMessageDocument = gql`
+    subscription NewServerMessage($serverId: String!) {
+  newServerMessage(serverId: $serverId) {
+    message {
+      content
+      messageId
+      datePosted
+    }
+    author {
+      id
+      username
+    }
+  }
+}
+    `;
+
+/**
+ * __useNewServerMessageSubscription__
+ *
+ * To run a query within a React component, call `useNewServerMessageSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useNewServerMessageSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNewServerMessageSubscription({
+ *   variables: {
+ *      serverId: // value for 'serverId'
+ *   },
+ * });
+ */
+export function useNewServerMessageSubscription(baseOptions: Apollo.SubscriptionHookOptions<NewServerMessageSubscription, NewServerMessageSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<NewServerMessageSubscription, NewServerMessageSubscriptionVariables>(NewServerMessageDocument, options);
+      }
+export type NewServerMessageSubscriptionHookResult = ReturnType<typeof useNewServerMessageSubscription>;
+export type NewServerMessageSubscriptionResult = Apollo.SubscriptionResult<NewServerMessageSubscription>;
 export const CreateServerDocument = gql`
     mutation CreateServer($serverName: String!) {
   createServer(serverName: $serverName)

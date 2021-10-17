@@ -6,11 +6,10 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { ServerUser } from "./ServerUser";
 import { Server } from "./Server";
+import { ServerUser } from "./ServerUser";
 
 @Entity("messages")
 @ObjectType()
@@ -27,12 +26,12 @@ export class Message extends BaseEntity {
   @Field()
   content: string;
 
-  @OneToOne(() => ServerUser)
-  @JoinColumn()
-  @Field()
-  author: ServerUser;
+  @ManyToOne(() => ServerUser, (su) => su.messages, {
+    onDelete: "CASCADE",
+  })
+  author!: ServerUser;
 
   @ManyToOne(() => Server, (server) => server.messages, { onDelete: "CASCADE" })
   @JoinColumn()
-  server: Server;
+  server!: Server;
 }

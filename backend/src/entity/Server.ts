@@ -21,8 +21,8 @@ export class Server extends BaseEntity {
   serverName!: string;
 
   @OneToMany(() => ServerUser, (su) => su.user)
-  users: Promise<ServerUser[]>;
+  users: ServerUser[];
 
   @OneToMany(() => Message, (ms) => ms.server)
-  messages: Promise<Message[]>;
+  messages: Message[];
 }

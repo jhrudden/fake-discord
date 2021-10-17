@@ -39,12 +39,12 @@ export class ServerUserResolver {
           innerJoinAndSelect: { user: "serverUser.user" },
         },
         where: {
-          serverId: serverId,
+          serverId,
         },
       });
       console.log("users", users);
       const usersOnServer = [] as User[];
-      users.map((user) => usersOnServer.push((user as any).__user__));
+      users.map((user) => usersOnServer.push(user.user));
 
       return usersOnServer;
     } catch (e) {
@@ -67,7 +67,7 @@ export class ServerUserResolver {
         },
       });
       const usersServers = [] as Server[];
-      servers.map((server) => usersServers.push((server as any).__server__));
+      servers.map((server) => usersServers.push(server.server));
 
       return usersServers;
     } catch (e) {
@@ -85,6 +85,7 @@ export class ServerUserResolver {
     }: ResolverFilterData<ServerUserSubPayload, ServerUserSubArgs>) =>
       args.serverId === payload.serverId,
   })
+  @UseMiddleware(isAuth)
   async newServerUser(
     @Arg("serverId") serverId: string,
     @Root() newUserPayload: ServerUserSubPayload
@@ -101,6 +102,7 @@ export class ServerUserResolver {
     }: ResolverFilterData<ServerUserSubPayload, ServerUserSubArgs>) =>
       args.serverId === payload.serverId,
   })
+  @UseMiddleware(isAuth)
   async deleteServerUser(
     @Arg("serverId") serverId: string,
     @Root() deletedUserPayload: ServerUserSubPayload
@@ -116,15 +118,15 @@ export class ServerUserResolver {
     @PubSub() pubSub: PubSubEngine
   ) {
     try {
+      const user = await User.findOne({ where: { id: userId } });
       const userAlreadyOnServer = await ServerUser.findOne({
         where: {
           serverId,
           userId,
         },
       });
-      const user = await User.findOne({ where: { id: userId } });
       if (!userAlreadyOnServer && user) {
-        await ServerUser.create({ serverId, userId }).save();
+        await ServerUser.create({ serverId: serverId, userId: userId }).save();
         const payload: ServerUserSubPayload = { serverId, user };
         await pubSub.publish(NEW_SERVER_USER, payload);
         return true;

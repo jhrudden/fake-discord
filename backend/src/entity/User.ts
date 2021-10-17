@@ -32,5 +32,5 @@ export class User extends BaseEntity {
   tokenVersion: number;
 
   @OneToMany(() => ServerUser, (su) => su.server)
-  servers: Promise<ServerUser[]>;
+  servers: ServerUser[];
 }

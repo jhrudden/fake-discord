@@ -1,30 +1,38 @@
 import { Field, ObjectType } from "type-graphql";
 import {
   BaseEntity,
+  Column,
   Entity,
-  JoinColumn,
   ManyToOne,
-  PrimaryColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
 } from "typeorm";
+import { Message } from "./Message";
 import { Server } from "./Server";
 import { User } from "./User";
 
 @Entity("server_users")
 @ObjectType()
 export class ServerUser extends BaseEntity {
-  @PrimaryColumn()
+  // NOTE: typeorm doesn't support creating ManyToOne relationships with tables with composite keys
+  // this key is redundant, since we will be using userId and serverId to find this table.
+  @PrimaryGeneratedColumn("uuid")
+  serverUserId: string;
+
+  @Column()
   @Field()
-  userId: string;
+  userId!: string;
 
-  @PrimaryColumn()
+  @Column()
   @Field()
-  serverId: string;
+  serverId!: string;
 
-  @ManyToOne(() => User, (user) => user.servers, { onDelete: "CASCADE" })
-  @JoinColumn({ name: "userId" })
-  user: Promise<User>;
+  @OneToMany(() => Message, (message) => message.author)
+  messages: Message[];
 
-  @ManyToOne(() => Server, (server) => server.users, { onDelete: "CASCADE" })
-  @JoinColumn({ name: "serverId" })
-  server: Promise<Server>;
+  @ManyToOne(() => User, (user) => user.id, { onDelete: "CASCADE" })
+  user: User;
+
+  @ManyToOne(() => Server, (server) => server.id, { onDelete: "CASCADE" })
+  server: Server;
 }
