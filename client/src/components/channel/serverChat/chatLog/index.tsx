@@ -3,6 +3,7 @@ import {
   DeleteServerMessageDocument,
   DeleteServerMessageSubscription,
   DeleteServerMessageSubscriptionVariables,
+  MessageResponse,
   NewServerMessageDocument,
   NewServerMessageSubscription,
   NewServerUserSubscriptionVariables,
@@ -66,18 +67,24 @@ const ChatLog: React.FC<Props> = ({ serverId }) => {
     };
   }, []);
 
+  const renderChatMessage = (message: MessageResponse) => {
+    return (
+      <ChatMessage
+        message={message!.message}
+        author={message!.author}
+        serverId={serverId}
+      />
+    );
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error || !data) return <div>Error</div>;
 
   return (
-    <div className="relative z-0 flex flex-col h-full px-4 overflow-auto">
-      {data!.serverMessages!.map((datum) => (
-        <ChatMessage
-          message={datum!.message}
-          author={datum!.author}
-          serverId={serverId}
-        />
-      ))}
+    <div className="relative z-0 flex flex-col h-full mt-auto px-4 overflow-y-auto">
+      {data!.serverMessages!.map((datum) =>
+        renderChatMessage(datum as MessageResponse)
+      )}
     </div>
   );
 };
