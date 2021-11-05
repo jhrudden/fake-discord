@@ -1,4 +1,5 @@
 import { NonEmptyArray } from "type-graphql";
+import { InviteResolver } from "./inviteResolver";
 import { MessageResolver } from "./messageResolver";
 import { ServerResolver } from "./serverResolver";
 import { ServerUserResolver } from "./serverUserResolver";
@@ -9,4 +10,5 @@ export const resolvers: NonEmptyArray<Function> = [
   ServerResolver,
   ServerUserResolver,
   MessageResolver,
+  InviteResolver,
 ];
