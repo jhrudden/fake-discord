@@ -42,7 +42,6 @@ export class ServerUserResolver {
           serverId,
         },
       });
-      console.log("users", users);
       const usersOnServer = [] as User[];
       users.map((user) => usersOnServer.push(user.user));
 
@@ -85,11 +84,11 @@ export class ServerUserResolver {
     }: ResolverFilterData<ServerUserSubPayload, ServerUserSubArgs>) =>
       args.serverId === payload.serverId,
   })
-  @UseMiddleware(isAuth)
   async newServerUser(
     @Arg("serverId") serverId: string,
     @Root() newUserPayload: ServerUserSubPayload
   ) {
+    console.log("ree");
     return newUserPayload.user;
   }
 
@@ -102,11 +101,11 @@ export class ServerUserResolver {
     }: ResolverFilterData<ServerUserSubPayload, ServerUserSubArgs>) =>
       args.serverId === payload.serverId,
   })
-  @UseMiddleware(isAuth)
   async deleteServerUser(
     @Arg("serverId") serverId: string,
     @Root() deletedUserPayload: ServerUserSubPayload
   ) {
+    console.log("ree");
     return deletedUserPayload.user;
   }
 
@@ -128,6 +127,7 @@ export class ServerUserResolver {
       if (!userAlreadyOnServer && user) {
         await ServerUser.create({ serverId: serverId, userId: userId }).save();
         const payload: ServerUserSubPayload = { serverId, user };
+        console.log("create");
         await pubSub.publish(NEW_SERVER_USER, payload);
         return true;
       }
@@ -156,6 +156,7 @@ export class ServerUserResolver {
       if (userOnServer && user) {
         await ServerUser.delete({ serverId, userId });
         const payload: ServerUserSubPayload = { serverId, user };
+        console.log("delete");
         await pubSub.publish(DELETE_SERVER_USER, payload);
         return true;
       }

@@ -7,8 +7,8 @@ import { UserResolver } from "./userResolver";
 
 export const resolvers: NonEmptyArray<Function> = [
   UserResolver,
+  MessageResolver,
   ServerResolver,
   ServerUserResolver,
-  MessageResolver,
   InviteResolver,
 ];
