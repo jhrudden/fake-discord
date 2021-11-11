@@ -1,7 +1,6 @@
 import React from "react";
 import { Message } from "../../../../../types/message";
 import { User } from "../../../../../types/user";
-import Button from "../../../../shared/button";
 
 interface Props {
   handleDeleteMessage(): Promise<void>;

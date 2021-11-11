@@ -38,6 +38,8 @@ export type MessageResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  killInvite: Scalars['Boolean'];
+  createServerInvite?: Maybe<ServerInvite>;
   postMessageToServer: Scalars['Boolean'];
   deleteMessageFromServer: Scalars['Boolean'];
   createServer: Scalars['Boolean'];
@@ -47,6 +49,16 @@ export type Mutation = {
   revokeRefreshToken: Scalars['Boolean'];
   login: LoginResponse;
   register: Scalars['Boolean'];
+};
+
+
+export type MutationKillInviteArgs = {
+  inviteUrl: Scalars['String'];
+};
+
+
+export type MutationCreateServerInviteArgs = {
+  serverId: Scalars['String'];
 };
 
 
@@ -98,12 +110,19 @@ export type MutationRegisterArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  getValidInvite?: Maybe<ServerInvite>;
   userMessages: Array<Message>;
   serverMessages: Array<MessageResponse>;
+  getServerInfo?: Maybe<ServerInfo>;
   usersOnServer: Array<User>;
   servers: Array<Server>;
   users: Array<User>;
   me?: Maybe<User>;
+};
+
+
+export type QueryGetValidInviteArgs = {
+  inviteUrl: Scalars['String'];
 };
 
 
@@ -114,6 +133,11 @@ export type QueryUserMessagesArgs = {
 
 
 export type QueryServerMessagesArgs = {
+  serverId: Scalars['String'];
+};
+
+
+export type QueryGetServerInfoArgs = {
   serverId: Scalars['String'];
 };
 
@@ -131,6 +155,18 @@ export type Server = {
   __typename?: 'Server';
   id: Scalars['String'];
   serverName: Scalars['String'];
+};
+
+export type ServerInfo = {
+  __typename?: 'ServerInfo';
+  serverName: Scalars['String'];
+};
+
+export type ServerInvite = {
+  __typename?: 'ServerInvite';
+  url: Scalars['String'];
+  created_at: Scalars['DateTime'];
+  serverId: Scalars['String'];
 };
 
 export type Subscription = {
@@ -169,6 +205,20 @@ export type User = {
   password: Scalars['String'];
   tokenVersion: Scalars['Int'];
 };
+
+export type CreateServerInviteMutationVariables = Exact<{
+  serverId: Scalars['String'];
+}>;
+
+
+export type CreateServerInviteMutation = { __typename?: 'Mutation', createServerInvite?: Maybe<{ __typename?: 'ServerInvite', url: string }> };
+
+export type GetValidInviteQueryVariables = Exact<{
+  inviteUrl: Scalars['String'];
+}>;
+
+
+export type GetValidInviteQuery = { __typename?: 'Query', getValidInvite?: Maybe<{ __typename?: 'ServerInvite', serverId: string }> };
 
 export type ServerMessagesQueryVariables = Exact<{
   serverId: Scalars['String'];
@@ -214,19 +264,26 @@ export type CreateServerMutationVariables = Exact<{
 
 export type CreateServerMutation = { __typename?: 'Mutation', createServer: boolean };
 
-export type UsersOnServerQueryVariables = Exact<{
-  serverId: Scalars['String'];
-}>;
-
-
-export type UsersOnServerQuery = { __typename?: 'Query', usersOnServer: Array<{ __typename?: 'User', username: string, id: string }> };
-
 export type ServersQueryVariables = Exact<{
   userId: Scalars['String'];
 }>;
 
 
 export type ServersQuery = { __typename?: 'Query', servers: Array<{ __typename?: 'Server', id: string, serverName: string }> };
+
+export type GetServerInfoQueryVariables = Exact<{
+  serverId: Scalars['String'];
+}>;
+
+
+export type GetServerInfoQuery = { __typename?: 'Query', getServerInfo?: Maybe<{ __typename?: 'ServerInfo', serverName: string }> };
+
+export type UsersOnServerQueryVariables = Exact<{
+  serverId: Scalars['String'];
+}>;
+
+
+export type UsersOnServerQuery = { __typename?: 'Query', usersOnServer: Array<{ __typename?: 'User', username: string, id: string }> };
 
 export type NewServerUserSubscriptionVariables = Exact<{
   serverId: Scalars['String'];
@@ -298,6 +355,74 @@ export type RegisterMutationVariables = Exact<{
 export type RegisterMutation = { __typename?: 'Mutation', register: boolean };
 
 
+export const CreateServerInviteDocument = gql`
+    mutation CreateServerInvite($serverId: String!) {
+  createServerInvite(serverId: $serverId) {
+    url
+  }
+}
+    `;
+export type CreateServerInviteMutationFn = Apollo.MutationFunction<CreateServerInviteMutation, CreateServerInviteMutationVariables>;
+
+/**
+ * __useCreateServerInviteMutation__
+ *
+ * To run a mutation, you first call `useCreateServerInviteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateServerInviteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createServerInviteMutation, { data, loading, error }] = useCreateServerInviteMutation({
+ *   variables: {
+ *      serverId: // value for 'serverId'
+ *   },
+ * });
+ */
+export function useCreateServerInviteMutation(baseOptions?: Apollo.MutationHookOptions<CreateServerInviteMutation, CreateServerInviteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateServerInviteMutation, CreateServerInviteMutationVariables>(CreateServerInviteDocument, options);
+      }
+export type CreateServerInviteMutationHookResult = ReturnType<typeof useCreateServerInviteMutation>;
+export type CreateServerInviteMutationResult = Apollo.MutationResult<CreateServerInviteMutation>;
+export type CreateServerInviteMutationOptions = Apollo.BaseMutationOptions<CreateServerInviteMutation, CreateServerInviteMutationVariables>;
+export const GetValidInviteDocument = gql`
+    query GetValidInvite($inviteUrl: String!) {
+  getValidInvite(inviteUrl: $inviteUrl) {
+    serverId
+  }
+}
+    `;
+
+/**
+ * __useGetValidInviteQuery__
+ *
+ * To run a query within a React component, call `useGetValidInviteQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetValidInviteQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetValidInviteQuery({
+ *   variables: {
+ *      inviteUrl: // value for 'inviteUrl'
+ *   },
+ * });
+ */
+export function useGetValidInviteQuery(baseOptions: Apollo.QueryHookOptions<GetValidInviteQuery, GetValidInviteQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetValidInviteQuery, GetValidInviteQueryVariables>(GetValidInviteDocument, options);
+      }
+export function useGetValidInviteLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetValidInviteQuery, GetValidInviteQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetValidInviteQuery, GetValidInviteQueryVariables>(GetValidInviteDocument, options);
+        }
+export type GetValidInviteQueryHookResult = ReturnType<typeof useGetValidInviteQuery>;
+export type GetValidInviteLazyQueryHookResult = ReturnType<typeof useGetValidInviteLazyQuery>;
+export type GetValidInviteQueryResult = Apollo.QueryResult<GetValidInviteQuery, GetValidInviteQueryVariables>;
 export const ServerMessagesDocument = gql`
     query ServerMessages($serverId: String!) {
   serverMessages(serverId: $serverId) {
@@ -512,42 +637,6 @@ export function useCreateServerMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateServerMutationHookResult = ReturnType<typeof useCreateServerMutation>;
 export type CreateServerMutationResult = Apollo.MutationResult<CreateServerMutation>;
 export type CreateServerMutationOptions = Apollo.BaseMutationOptions<CreateServerMutation, CreateServerMutationVariables>;
-export const UsersOnServerDocument = gql`
-    query UsersOnServer($serverId: String!) {
-  usersOnServer(serverId: $serverId) {
-    username
-    id
-  }
-}
-    `;
-
-/**
- * __useUsersOnServerQuery__
- *
- * To run a query within a React component, call `useUsersOnServerQuery` and pass it any options that fit your needs.
- * When your component renders, `useUsersOnServerQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUsersOnServerQuery({
- *   variables: {
- *      serverId: // value for 'serverId'
- *   },
- * });
- */
-export function useUsersOnServerQuery(baseOptions: Apollo.QueryHookOptions<UsersOnServerQuery, UsersOnServerQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<UsersOnServerQuery, UsersOnServerQueryVariables>(UsersOnServerDocument, options);
-      }
-export function useUsersOnServerLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersOnServerQuery, UsersOnServerQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<UsersOnServerQuery, UsersOnServerQueryVariables>(UsersOnServerDocument, options);
-        }
-export type UsersOnServerQueryHookResult = ReturnType<typeof useUsersOnServerQuery>;
-export type UsersOnServerLazyQueryHookResult = ReturnType<typeof useUsersOnServerLazyQuery>;
-export type UsersOnServerQueryResult = Apollo.QueryResult<UsersOnServerQuery, UsersOnServerQueryVariables>;
 export const ServersDocument = gql`
     query Servers($userId: String!) {
   servers(userId: $userId) {
@@ -584,6 +673,77 @@ export function useServersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Se
 export type ServersQueryHookResult = ReturnType<typeof useServersQuery>;
 export type ServersLazyQueryHookResult = ReturnType<typeof useServersLazyQuery>;
 export type ServersQueryResult = Apollo.QueryResult<ServersQuery, ServersQueryVariables>;
+export const GetServerInfoDocument = gql`
+    query GetServerInfo($serverId: String!) {
+  getServerInfo(serverId: $serverId) {
+    serverName
+  }
+}
+    `;
+
+/**
+ * __useGetServerInfoQuery__
+ *
+ * To run a query within a React component, call `useGetServerInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetServerInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetServerInfoQuery({
+ *   variables: {
+ *      serverId: // value for 'serverId'
+ *   },
+ * });
+ */
+export function useGetServerInfoQuery(baseOptions: Apollo.QueryHookOptions<GetServerInfoQuery, GetServerInfoQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetServerInfoQuery, GetServerInfoQueryVariables>(GetServerInfoDocument, options);
+      }
+export function useGetServerInfoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetServerInfoQuery, GetServerInfoQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetServerInfoQuery, GetServerInfoQueryVariables>(GetServerInfoDocument, options);
+        }
+export type GetServerInfoQueryHookResult = ReturnType<typeof useGetServerInfoQuery>;
+export type GetServerInfoLazyQueryHookResult = ReturnType<typeof useGetServerInfoLazyQuery>;
+export type GetServerInfoQueryResult = Apollo.QueryResult<GetServerInfoQuery, GetServerInfoQueryVariables>;
+export const UsersOnServerDocument = gql`
+    query UsersOnServer($serverId: String!) {
+  usersOnServer(serverId: $serverId) {
+    username
+    id
+  }
+}
+    `;
+
+/**
+ * __useUsersOnServerQuery__
+ *
+ * To run a query within a React component, call `useUsersOnServerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersOnServerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersOnServerQuery({
+ *   variables: {
+ *      serverId: // value for 'serverId'
+ *   },
+ * });
+ */
+export function useUsersOnServerQuery(baseOptions: Apollo.QueryHookOptions<UsersOnServerQuery, UsersOnServerQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UsersOnServerQuery, UsersOnServerQueryVariables>(UsersOnServerDocument, options);
+      }
+export function useUsersOnServerLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersOnServerQuery, UsersOnServerQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UsersOnServerQuery, UsersOnServerQueryVariables>(UsersOnServerDocument, options);
+        }
+export type UsersOnServerQueryHookResult = ReturnType<typeof useUsersOnServerQuery>;
+export type UsersOnServerLazyQueryHookResult = ReturnType<typeof useUsersOnServerLazyQuery>;
+export type UsersOnServerQueryResult = Apollo.QueryResult<UsersOnServerQuery, UsersOnServerQueryVariables>;
 export const NewServerUserDocument = gql`
     subscription NewServerUser($serverId: String!) {
   newServerUser(serverId: $serverId) {

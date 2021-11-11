@@ -9,15 +9,6 @@ export const usersOnServerQuery = gql`
   }
 `;
 
-export const serversQuery = gql`
-  query Servers($userId: String!) {
-    servers(userId: $userId) {
-      id
-      serverName
-    }
-  }
-`;
-
 export const newServerUserSubscription = gql`
   subscription NewServerUser($serverId: String!) {
     newServerUser(serverId: $serverId) {

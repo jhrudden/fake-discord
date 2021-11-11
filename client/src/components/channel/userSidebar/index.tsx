@@ -27,6 +27,7 @@ const UserSideBar: React.FC<Props> = ({ serverId }) => {
       variables: { serverId },
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData) return prev;
+        console.log("HEREHHE");
         const newServerUser = subscriptionData.data.newServerUser;
         const mergedServerUsers = [...prev.usersOnServer, newServerUser];
         return Object.assign({}, prev, {
@@ -60,7 +61,7 @@ const UserSideBar: React.FC<Props> = ({ serverId }) => {
       unsubToNewUser();
       unsubToDeleteUser();
     };
-  }, []);
+  }, [serverId]);
   if (loading) return <div>Loading...</div>;
   if (error || !data) return <div>Error</div>;
   return (

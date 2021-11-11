@@ -5,3 +5,20 @@ export const createServerMutation = gql`
     createServer(serverName: $serverName)
   }
 `;
+
+export const serversQuery = gql`
+  query Servers($userId: String!) {
+    servers(userId: $userId) {
+      id
+      serverName
+    }
+  }
+`;
+
+export const serverInfoQuery = gql`
+  query GetServerInfo($serverId: String!) {
+    getServerInfo(serverId: $serverId) {
+      serverName
+    }
+  }
+`;

@@ -16,7 +16,7 @@ const ServerSidebar: React.FC<Props> = () => {
   });
   return (
     <div className="hidden sm:flex sticky">
-      <div className="w-20 flex flex-col h-screen bg-gray-deepestDark">
+      <div className="w-20 flex flex-col h-screen bg-gray-darkerThanDeepest">
         {/* Home button  */}
         <HomeServerItem />
         <div className="w-1/2 h-supa-small mx-auto bg-gray-dark rounded-xl mt-2 mb-1"></div>
