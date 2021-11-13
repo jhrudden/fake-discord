@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   DeleteServerMessageDocument,
   DeleteServerMessageSubscription,
@@ -16,9 +16,11 @@ type Props = {
 };
 
 const ChatLog: React.FC<Props> = ({ serverId }) => {
+  const bottomRef = useRef<HTMLDivElement>(null);
   const { data, loading, error, subscribeToMore } = useServerMessagesQuery({
     variables: { serverId },
   });
+  const messageLength = data ? data!.serverMessages.length : 0;
   useEffect(() => {
     const unsubToNewMessage = subscribeToMore<
       NewServerMessageSubscription,
@@ -64,6 +66,12 @@ const ChatLog: React.FC<Props> = ({ serverId }) => {
     };
   }, [serverId]);
 
+  useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef!.current.scrollIntoView();
+    }
+  }, [messageLength]);
+
   const renderChatMessage = (message: MessageResponse, key: number) => {
     return (
       <ChatMessage
@@ -83,6 +91,7 @@ const ChatLog: React.FC<Props> = ({ serverId }) => {
       {data!.serverMessages!.map((datum, index) =>
         renderChatMessage(datum as MessageResponse, index)
       )}
+      <div ref={bottomRef} />
     </div>
   );
 };
